@@ -1,19 +1,16 @@
 {
-  "name": "sc5-slack-weatherbot-boilerplate",
-  "version": "1.4.0",
-  "description": "A boilerplate for Serverless applications by SC5 Online",
+  "name": "slack-chatbot-workshop",
+  "version": "1.0.0",
+  "description": "Slack Chatbot Workshop",
   "keywords": [
     "serverless",
     "aws"
   ],
-  "author": "Mikael Puittinen",
-  "contributors": [
-    "Eetu Tuomala"
-  ],
+  "author": "Eetu Tuomala",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SC5/sc5-serverless-boilerplate.git"
+    "url": "https://github.com/SC5/slack-chatbot-workshop.git"
   },
   "dependencies": {
     "moment": "^2.18.1",

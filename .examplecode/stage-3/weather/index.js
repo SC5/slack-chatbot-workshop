@@ -101,11 +101,21 @@ const forecastByLocationName = (locationName, datetime) => {
     });
 };
 
+const getDatetime = (entities) => {
+  if (entities.datetime) {
+    if (entities.datetime[0].type === 'interval') {
+      return entities.datetime[0].from.value;
+    }
+    return entities.datetime[0].value;
+  }
+  return Date.now();
+};
+
 module.exports.handler = (event, context, callback) => {
   const message = getMessage(event);
   const meaning = JSON.parse(getMessage(event).responseText);
   const locationName = meaning.entities.location[0].value;
-  const datetime = meaning.entities.datetime ? meaning.entities.datetime[0].value : Date.now();
+  const datetime = getDatetime(meaning.entities);
   return (meaning.entities.datetime
     ? forecastByLocationName(locationName, datetime)
     : weatherByLocationName(locationName))

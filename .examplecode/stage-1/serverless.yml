@@ -1,0 +1,104 @@
+frameworkVersion: ">=1.2.0 <2.0.0"
+
+service: my-slack-weatherbot # NOTE: update this with your service name
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  profile: laardee
+  region: us-east-1
+  environment:
+    # General
+    SERVERLESS_STAGE: ${opt:stage, self:provider.stage}
+    SERVERLESS_PROJECT: ${self:service}
+    SERVERLESS_REGION: ${opt:region, self:provider.region}
+
+    # Install oAuth callback url
+    INSTALL_CALLBACK_URL: http://slackbot-workshop.sandbox.sc5.io
+
+    # DynamoDB table names
+    TEAMS_TABLE_NAME: ${self:provider.environment.SERVERLESS_PROJECT}-${self:provider.environment.SERVERLESS_STAGE}-teams
+    SESSIONS_TABLE_NAME: ${self:provider.environment.SERVERLESS_PROJECT}-${self:provider.environment.SERVERLESS_STAGE}-sessions
+
+    # Secrets
+    SLACK_CLIENT_ID: ${self:custom.env.SLACK_CLIENT_ID}
+    SLACK_CLIENT_SECRET: ${self:custom.env.SLACK_CLIENT_SECRET}
+    SLACK_VERIFICATION_TOKEN: ${self:custom.env.SLACK_VERIFICATION_TOKEN}
+    WITAI_SERVER_ACCESS_TOKEN: ${self:custom.env.WITAI_SERVER_ACCESS_TOKEN}
+    OPENWEATHERMAP_API_KEY: ${self:custom.env.OPENWEATHERMAP_API_KEY}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+      - dynamodb:*
+      Resource: arn:aws:dynamodb:${self:provider.environment.SERVERLESS_REGION}:*:*
+    - Effect: Allow
+      Action:
+      - SNS:*
+      Resource: arn:aws:sns:${self:provider.environment.SERVERLESS_REGION}:*:*
+#    - Effect: Allow
+#      Action:
+#      - KMS:Decrypt
+#      Resource: ${self:custom.kmsSecrets.keyArn}
+package:
+  exclude:
+    - test/**
+    - .git/**
+
+functions:
+  slack-events:
+    handler: slack/events/index.handler
+    events:
+      - http:
+          path: slack/events
+          method: post
+  slack-install:
+    handler: slack/install/index.handler
+    events:
+      - http:
+          path: slack/install
+          method: get
+
+plugins:
+  - serverless-mocha-plugin
+  - serverless-webpack
+  - serverless-offline
+#  - serverless-kms-secrets
+
+custom:
+  env: ${file(./.env.yml)} # imports variables from .env.yml
+  serverless-mocha-plugin:
+    functionTemplate: templates/function.ejs
+  webpackIncludeModules: true
+#  kmsSecrets: ${file(kms-secrets.${opt:stage, self:provider.stage}.${opt:region, self:provider.region}.yml)}
+
+resources:
+  Resources:
+    TeamsTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete # use Retain in production
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: team_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: team_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.TEAMS_TABLE_NAME}
+#    SessionsTable:
+#      Type: AWS::DynamoDB::Table
+#      DeletionPolicy: Delete
+#      Properties:
+#        AttributeDefinitions:
+#          - AttributeName: id
+#            AttributeType: S
+#        KeySchema:
+#          - AttributeName: id
+#            KeyType: HASH
+#        ProvisionedThroughput:
+#          ReadCapacityUnits: 1
+#          WriteCapacityUnits: 1
+#        TableName: ${self:provider.environment.SESSIONS_TABLE_NAME}

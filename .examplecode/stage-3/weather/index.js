@@ -124,5 +124,8 @@ module.exports.handler = (event, context, callback) => {
         message,
         { responseText: createResponse(Object.assign({ datetime, locationName }, data)) }))
     .then(result => sendMessage(process.env.BOT_TOPIC_NAME, { message: result }))
-    .then(() => callback(null, 'ok'));
+    .then(() => callback(null, 'ok'))
+    .catch(error =>
+      log(error.toString())
+        .then(() => callback(null, error)));
 };

@@ -75,6 +75,6 @@ module.exports.handler = (event, context, callback) => {
     }))
     .then(() => callback(null, createResponse(slack)))
     .catch(error =>
-      log('ERROR', error)
+      log(error.toString())
         .then(() => callback(null, createResponse(slack))));
 };

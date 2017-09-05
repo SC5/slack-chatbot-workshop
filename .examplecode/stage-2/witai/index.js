@@ -25,5 +25,8 @@ module.exports.handler = (event, context, callback) => {
       Object.assign(message, { responseText: response.message });
       return sendMessage(process.env.BOT_TOPIC_NAME, { message });
     })
-    .then(() => callback(null, 'ok'));
+    .then(() => callback(null, 'ok'))
+    .catch(error =>
+      log(error.toString())
+        .then(() => callback(null, error)));
 };

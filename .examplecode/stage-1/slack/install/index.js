@@ -45,5 +45,5 @@ module.exports.handler = (event, context, callback) =>
     .then(saveTeam)
     .then(() => callback(null, response(null)))
     .catch(error =>
-      log('Error', error)
+      log(error.toString())
         .then(() => callback(null, response(error))));

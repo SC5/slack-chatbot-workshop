@@ -77,7 +77,7 @@ module.exports.handler = (event, context, callback) => {
       .then(message => sendMessage(process.env.AI_TOPIC_NAME, { message }))
       .then(() => callback(null, createResponse(slack)))
       .catch(error =>
-        log('ERROR', error)
+        log(error.toString())
           .then(() => callback(null, createResponse(slack))));
   } else if (event.Records && event.Records[0].EventSource === 'aws:sns') {
     const message = getMessage(event);
@@ -89,7 +89,7 @@ module.exports.handler = (event, context, callback) => {
     })
       .then(callback(null, 'ok'))
       .catch((error) =>
-        log(error)
+        log(error.toString())
           .then(() => callback(error)));
   }
 

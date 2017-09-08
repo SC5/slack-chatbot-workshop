@@ -46,11 +46,19 @@ const mapIcon = (icon) => {
   switch (icon) {
     case '01d':
       return ':sunny:';
+    case '01n':
+      return ':sunny:';
     case '02d':
+      return ':sun_small_cloud:';
+    case '02n':
       return ':sun_small_cloud:';
     case '03d':
       return ':sun_behind_cloud:';
+    case '03n':
+      return ':sun_behind_cloud:';
     case '04d':
+      return ':cloud:';
+    case '04n':
       return ':cloud:';
     case '09d':
       return ':rain_cloud:';

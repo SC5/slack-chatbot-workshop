@@ -32,7 +32,8 @@
     "serverless-kms-secrets": "^0.9.1",
     "serverless-mocha-plugin": "^1.5.1",
     "serverless-offline": "^3.2.1",
-    "serverless-webpack": "^1.0.0-rc.3",
+    "serverless-webpack": "^3.1.2",
+    "webpack": "^3.7.1",
     "webpack-node-externals": "^1.5.4",
     "nsp": "^2.7.0"
   },
